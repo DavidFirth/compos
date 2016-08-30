@@ -1,0 +1,9 @@
+Package: cglm
+Type: Package
+Title: Compositional generalized linear models
+Version: 0.2
+Date: 2016-08-30
+Author: David Firth and Fiona Sammut
+Maintainer: David Firth <d.firth@warwick.ac.uk>
+Description: This package provides facilities for specifying and fitting the "Generalized Wedderburn" logit-linear model for a compositional response, and also (when the response vectors are free of zeros) the Aitchison-style multivariate linear regression based on logratio transformation of the response.  
+License: GPL 2.0 or later.

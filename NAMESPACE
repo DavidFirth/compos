@@ -1,0 +1,8 @@
+## importFrom("graphics", "plot", "points", "segments")
+## importFrom("stats", "coef", "glm", "model.matrix", "residuals", "terms", "vcov")
+
+export(cglm)
+
+S3method(print, cglm)
+S3method(summary, cglm)
+S3method(plot, cglm)
