@@ -8,8 +8,8 @@ gw.fit <- function(X, Y, weights = rep(1, nobs), offset = rep(0, nobs),
   log.totals <- log(totals)
   D <- ncol(Y)  
   
-  ###  Next function does one iteration of the hybrid quasi-likelihood algorithm
-  hybrid.update <- function(fit){
+  ###  Next function does one iteration of the iterative least-squares algorithm
+  update <- function(fit){
     eta <- fitted(fit)
     mu <- exp(eta)
     fitted.totals <- rowSums(mu)
@@ -31,7 +31,7 @@ gw.fit <- function(X, Y, weights = rep(1, nobs), offset = rep(0, nobs),
   while((iteration < maxit) && !converged){
     iteration <- iteration + 1
     oldfit <- fit
-    fit <- hybrid.update(fit)
+    fit <- update(fit)
     if (trace) {
       cat("Iteration ", iteration, "\n")
       print(fit)
@@ -39,12 +39,18 @@ gw.fit <- function(X, Y, weights = rep(1, nobs), offset = rep(0, nobs),
     converged <- all((abs(fitted(fit) - fitted(oldfit))) < epsilon)
   }
   
-  ###  Tidy up and finish cglm.fit 
+  ###  Tidy up and finish gw.fit 
   rownames(fit$coefficients) <- colnames(X)
+  fit$linear.predictors <- fit$fitted.values
   fit$fitted.values <- exp(fit$fitted.values)
   fit$fitted.values <- totals * fit$fitted.values / rowSums(fit$fitted.values)
   fit$residuals <- Y / fit$fitted.values - 1    
   fit$residuals <- fit$residuals - rowMeans(fit$residuals)  ## arbitrary, but symmetric in the components
+  ##
+  null.fit <- colSums(weights * Y) / sum(weights)
+  null.res <- t(Y) / null.fit - 1
+  null.res <- null.res - colMeans(null.res)
+  fit$SS.null <- sum(weights * (null.res ^ 2)) 
   ##
   fit$Sigma <- crossprod(fit$residuals) / fit$df.residual   ## estimates (C_*)' Sigma (C_*)
   ##

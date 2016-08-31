@@ -3,6 +3,12 @@
 
 export(cglm)
 
-S3method(print, cglm)
 S3method(summary, cglm)
 S3method(plot, cglm)
+
+importFrom("methods", "as")
+importFrom("stats", "coef", "fitted", "is.empty.model", "lm",
+     "model.matrix", "model.response", "model.weights",
+     "na.exclude", "nobs", "quantile", "residuals", "setNames",
+     "vcov")
+importFrom("Matrix", "Diagonal", "Matrix", "bdiag")

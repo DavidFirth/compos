@@ -1,19 +1,13 @@
 cglm <- function (formula, data, weights, subset,
-                    na.action, start = NULL,
+                    na.action = na.exclude, start = NULL,
                     maxit = 100, epsilon = 1e-8, trace = FALSE,
-                    model = TRUE, method = "gw.fit",
-                    y = TRUE, contrasts = NULL, ref = "mean",
-                  y.totals = NULL, br = FALSE, checkAliasing = FALSE, qr = FALSE, ...)
-    ## IK NOTE 18/06/2016: The chekAliasing and qr areguments have
-    ## been temporary added here. They work with multinom.fit and are
-    ## there to control whether a qr decompositions needs to be
-    ## computed on exit (useful for vcov methods) and/or whether
-    ## aliasing checks need to made. The addition of these two
-    ## arguments may affect the other methods, if they are specific in
-    ## the arguments they take.
-    ##
-    ##  The y.totals arg is there to allow NAs to be treated properly
-    ##  (in due course, once I have programmed that)
+                    method = "gw.fit",
+                    contrasts = NULL, ref = 1,
+                    y.totals = NULL, 
+                    br = FALSE, checkAliasing = FALSE, qr = FALSE, 
+                    ...)
+    ##  The y.totals argument is there to allow NAs to be treated properly
+    ##  (in due course, once we have programmed that).
 {
     call <- match.call()
     if (missing(data))
@@ -65,28 +59,37 @@ cglm <- function (formula, data, weights, subset,
 #    else if (is.null(y.totals)) {
 #	    Y <- Y / rsY
 #    } else stop("y.totals must be either a positive number or NULL")
+    
+    if (is.character(ref)){ 
+        if (!(ref %in% response.names)) stop("invalid ref argument")
+        ref <- which(response.names == ref)
+    }
 
 offset <- rep(0, n)
 ##  Still need to handle offset in the below.  A vector of length nrow(X).
 
+    if (is.null(weights)) weights <- rep(1, n)
+
     fit <- eval(call(if (is.function(method)) "method" else method,
                   X = X, Y = Y, weights = weights, offset = offset,
-                  maxit = maxit, epsilon = epsilon, trace = trace >
-                  0L, br = br, checkAliasing = checkAliasing, qr = qr))
+                  maxit = maxit, epsilon = epsilon, trace = trace > 0L))
     coefs <- coef(fit)
     fit$coef.contrasts <- cmatrix <- cglmContrastMatrix(coefs, ref)
     fit$coefficients <- as.matrix(coefs %*% cmatrix)
+    is.na(fit$coefficients[, ref]) <- TRUE
+    fit$linear.predictors <- fit$linear.predictors %*% cmatrix
     fit$ref <- ref
     fit$call <- call
+    fit$formula <- formula
     fit$y <- Y
     fit$x <- X
-    fit$prior.weights <- if (is.null(weights)) rep(1, n) else weights
+    fit$prior.weights <- weights
     names(fit$prior.weights) <- case.names
-    fit$linear.predictors <- log(fit$fitted.values)
     fit$na.action = attr(mf, "na.action")
     fit$method <- method
-    fit$deviance <- deviance.cglm(fit)
-    if (model) fit$model <- mf
+    fit$model <- mf
+    fit$df.null <- nobs(fit) - 1
+    fit$SS.residual <- sum(fit$prior.weights * (fit$residuals ^ 2)) 
     class(fit) <- c("cglm", "mlm", "lm")
     return(fit)
 }

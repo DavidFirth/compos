@@ -24,10 +24,12 @@ data(ArcticLake)
 head(ArcticLake)
 sediments <- ArcticLake[, c("sand", "silt", "clay")]
 rowSums(sediments)
-## Fit the Aitchison-style multivariate linear model for dependence of logratios on log(depth):
+##  Fit the Aitchison-style multivariate linear model for dependence 
+##  of logratios on log(depth):
 logdepth <- log(ArcticLake[, "depth"])
 cglm(sediments ~ logdepth, ref = 3, method = "logy.fit")
-## Fit the corresponding Generalized Wedderburn logit model for dependence of logratios on log(depth):
+##  Fit the corresponding Generalized Wedderburn logit model for 
+##  dependence of logratios on log(depth):
 gw_model <- cglm(sediments ~ logdepth, ref = 3)
 }
 \keyword{datasets}

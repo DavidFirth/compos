@@ -1,5 +1,4 @@
 cglmContrastMatrix <- function(coef.matrix, ref = NULL) {
-  require(Matrix)
   D <- ncol(coef.matrix)
   cnames <- colnames(coef.matrix)
   if (ref == "mean") {  ## centered contrasts are made, in this case
