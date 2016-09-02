@@ -10,7 +10,7 @@ vcov.cglm <- function(model, type = "model-based") {
     d <- ncol(y)
     coefs <- coef(model)
     np <- nrow(coefs)
-    fullContrasts <- model$coef.contrasts
+    fullContrasts <- as.matrix(model$coef.contrasts)
     ##
     ##  Model-based vcov matrix uses the model-based estimate of "Sigma":
     ##
