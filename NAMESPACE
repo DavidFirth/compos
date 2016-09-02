@@ -5,6 +5,7 @@ export(cglm)
 
 S3method(summary, cglm)
 S3method(plot, cglm)
+S3method(vcov, cglm)
 
 importFrom("methods", "as")
 importFrom("stats", "coef", "fitted", "is.empty.model", "lm",
