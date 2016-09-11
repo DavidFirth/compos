@@ -14,10 +14,10 @@
   A 39 by 4 numeric matrix.
 }
 \source{
-Aitchison 1986 page ??
+Aitchison (1986), dataset 5.  Originally from a paper of Coakley and Rust, Journal of Sedimentary Petrology, 1968.
 }
 \references{
-  Also available via the compositions package.
+Aitchison, J (1986).  The Statistical Analysis of Compositional data.  Chapman and Hall.
 }
 \examples{
 data(ArcticLake)

@@ -1,6 +1,6 @@
 summary.cglm <- function (object, digits = max(3, getOption("digits")-3), vcov_type = "model-based", ...) 
 {
-    call <- object$call
+    call <- object$call 
     ref <- object$ref
     coef <- coef(object)
     refname <- colnames(coef)[ref]
