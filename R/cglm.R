@@ -76,7 +76,6 @@ offset <- rep(0, n)
     coefs <- coef(fit)
     fit$coef.contrasts <- cmatrix <- cglmContrastMatrix(coefs, ref)
     fit$coefficients <- as.matrix(coefs %*% cmatrix)
-    is.na(fit$coefficients[, ref]) <- TRUE
     fit$linear.predictors <- fit$linear.predictors %*% cmatrix
     fit$ref <- ref
     fit$call <- call
