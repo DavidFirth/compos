@@ -72,5 +72,6 @@ vcov.cglm <- function(model, type = "model-based") {
                        rep(coefnames[[2]], rep(nrow(coefs), ncol(coefs))), 
                        sep = "_")
     rownames(result) <- colnames(result) <- coefnames
-    return(as.matrix(result))
+ 
+   return(as.matrix(result)) 
 } 
