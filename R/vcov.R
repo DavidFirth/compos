@@ -62,8 +62,6 @@ vcov.cglm <- function(model, type = "model-based") {
         ##  Now extract the vcov relevant to the specified set of contrasts:
         cc <- kronecker(fullContrasts, diag(np))
         result <- crossprod(cc, result) %*% cc
-        ##  and convert the result to a sparse matrix:
-        result <- as(result, "sparseMatrix")    ##  is this sparse form really useful though?
     }
     ##
     ##  Finally, tidy up the row and column names in the result:
@@ -73,5 +71,5 @@ vcov.cglm <- function(model, type = "model-based") {
                        sep = "_")
     rownames(result) <- colnames(result) <- coefnames
  
-   return(as.matrix(result)) 
+   return(result)
 } 
