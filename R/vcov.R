@@ -1,4 +1,5 @@
-vcov.cglm <- function(model, type = "model-based") {
+vcov.cglm <- function(object, type = "model-based") {  
+    model <- object
     if (!inherits(model, "cglm")) stop("model must be an object of class \"cglm\"")
     if (!(type %in% c("model-based", "robust"))) {
         stop("type must be either \"model-based\" or \"robust\"")
@@ -25,7 +26,7 @@ vcov.cglm <- function(model, type = "model-based") {
             stop("robust standard errors are not implemented for this model")
         }
         ##  The bread in the Sandwich estimator is model-based vcov with Sigma the identity matrix
-        bread <- kronecker(crossprod(fullContrasts, fullContrasts), solve(crossprod(X)))
+bread <- kronecker(crossprod(fullContrasts, fullContrasts), solve(crossprod(X)))
         ##  Next compute the "ham": 
         p <- fitted(model)
         p <- p / totals
@@ -54,7 +55,7 @@ vcov.cglm <- function(model, type = "model-based") {
         Vinv <- bdiag(Vinv)
         D <- PPexp %*% Xexp
         VinvD <- Vinv %*% D
-        ham <- crossprod(VinvD, S) %*% VinvD
+        ham <- as.matrix(Matrix::crossprod(VinvD, S) %*% VinvD)
         perm <- as.vector(outer(d * (0:(np-1)), 1:d, FUN = "+"))  
         ham <- ham[perm, perm]  ## corrects the ordering of rows and columns
         ##
