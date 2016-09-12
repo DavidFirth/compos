@@ -1,27 +1,26 @@
 plot.cglm <- function (x, ...) .NotYetImplemented()
 
-predict.cglm <- function (x, ...) .NotYetImplemented()
+predict.cglm <- function (object, ...) .NotYetImplemented()
 
-add1.cglm <- function (x, ...) .NotYetImplemented()
+add1.cglm <- function (object, scope, ...) .NotYetImplemented()
 
-anova.cglm <- function (x, ...) .NotYetImplemented()
+anova.cglm <- function (object, ...) .NotYetImplemented()
 
-confint.cglm <- function (x, ...) .NotYetImplemented()
+confint.cglm <- function (object, parm, level = 0.95, ...) {
+    .NotYetImplemented() }
 
-cooks.distance.cglm <- function (x, ...) .NotYetImplemented()
+cooks.distance.cglm <- function (model, ...) .NotYetImplemented()
 
-drop1.cglm <- function (x, ...) .NotYetImplemented()
+drop1.cglm <- function (object, scope, ...) .NotYetImplemented()
 
-effects.cglm <- function (x, ...) .NotYetImplemented()
+effects.cglm <- function (object, ...) .NotYetImplemented()
 
-influence.cglm <- function (x, ...) .NotYetImplemented()
+influence.cglm <- function (model, ...) .NotYetImplemented()
 
-rstandard.cglm <- function (x, ...) .NotYetImplemented()
+rstandard.cglm <- function (model, ...) .NotYetImplemented()
 
-rstudent.cglm <- function (x, ...) .NotYetImplemented()
+rstudent.cglm <- function (model, ...) .NotYetImplemented()
 
-update.cglm <- function (x, ...) .NotYetImplemented()
+update.cglm <- function (object, ...) .NotYetImplemented()
 
-anova.cglm <- function (x, ...) .NotYetImplemented()
-
-deviance.cglm <- function (x, ...) .NotYetImplemented()
+deviance.cglm <- function (object, ...) .NotYetImplemented()
