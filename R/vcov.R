@@ -1,6 +1,6 @@
-vcov.cglm <- function(object, type = "model-based") {  
+vcov.colm <- function(object, type = "model-based") {  
     model <- object
-    if (!inherits(model, "cglm")) stop("model must be an object of class \"cglm\"")
+    if (!inherits(model, "colm")) stop("model must be an object of class \"colm\"")
     if (!(type %in% c("model-based", "robust"))) {
         stop("type must be either \"model-based\" or \"robust\"")
     }
