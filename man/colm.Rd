@@ -1,5 +1,5 @@
-\name{cglm}
-\alias{cglm}
+\name{colm}
+\alias{colm}
 \title{
 Function to specify and fit multivariate regression models to compositional-response data
 }
@@ -9,7 +9,7 @@ multivariate linear regression based on logratio transformation of the responses
 Generalized Wedderburn logit model.
 }
 \usage{
-cglm(formula, data, weights, subset, na.action = na.exclude, start = NULL, maxit = 100, 
+colm(formula, data, weights, subset, na.action = na.exclude, start = NULL, maxit = 100, 
    epsilon = 1e-08, trace = FALSE, method = "gw.fit", contrasts = NULL, ref = 1, 
    y.totals = NULL, ...)
 }
@@ -21,7 +21,7 @@ cglm(formula, data, weights, subset, na.action = na.exclude, start = NULL, maxit
   \item{data}{
   an optional data frame, list or environment as for \code{\link{glm}}.  If not found in \code{data}, 
   the variables for the model are taken from environment(formula), typically the environment from 
-  which cglm is called.
+  which colm is called.
 }
   \item{weights}{
   an optional vector of 'prior weights' to be used in the fitting process. Should be NULL or a numeric vector.
@@ -65,7 +65,7 @@ cglm(formula, data, weights, subset, na.action = na.exclude, start = NULL, maxit
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-A model object of class \Sexpr{"cglm"}, as a list with the following components:
+A model object of class \Sexpr{"colm"}, as a list with the following components:
   \item{coefficients}{a matrix, the parameter estimates in the fitted model.}
   \item{residuals}{the matrix of model residuals.}
   \item{effects}{??}
@@ -109,10 +109,10 @@ data(ArcticLake)
 ##  dependence of logratios on log(depth):
 sediments <- ArcticLake[, 1:3]
 logdepth <- log(ArcticLake[, "depth"])
-cglm(sediments ~ logdepth, ref = 3, method = "logy.fit")
+colm(sediments ~ logdepth, ref = 3, method = "logy.fit")
 ##  Fit the corresponding Generalized Wedderburn logit 
 ##  model for dependence of logratios on log(depth):
-gw_model <- cglm(sediments ~ logdepth, ref = 3)
+gw_model <- colm(sediments ~ logdepth, ref = 3)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
