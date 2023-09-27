@@ -1,4 +1,4 @@
-summary.cglm <- function (object, digits = max(3, getOption("digits")-3), vcov_type = "model-based", ...) 
+summary.colm <- function (object, digits = max(3, getOption("digits")-3), vcov_type = "model-based", ...) 
 {
     call <- object$call 
     ref <- object$ref
