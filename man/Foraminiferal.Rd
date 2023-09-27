@@ -23,7 +23,7 @@ head(Foraminiferal)
 foraminifer <- Foraminiferal[, c("Na", "Np", "Go", "Gt")]
 rowSums(foraminifer)
 ##  Fit the Generalized Wedderburn logit model for dependence of ## logratios on depth:
-gw_model <- cglm(foraminifer ~ depth, ref = 4)
+gw_model <- colm(foraminifer ~ depth, ref = 4)
 ## the above line is not working for the time being as foraminifer
 ## is taken to be a list...needs to be defined as a matrix 
 ##(as.matrix)
