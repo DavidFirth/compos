@@ -1,4 +1,4 @@
-formula.cglm <- function(object) object$formula
+formula.colm <- function(object) object$formula
 
-model.frame.cglm <- function(object) object$model
+model.frame.colm <- function(object) object$model
 
