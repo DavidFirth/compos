@@ -1,4 +1,4 @@
-cglm <- function (formula, data, weights, subset,
+colm <- function (formula, data, weights, subset,
                     na.action = na.exclude, start = NULL,
                     maxit = 100, epsilon = 1e-8, trace = FALSE,
                     method = "gw.fit",
@@ -74,7 +74,7 @@ offset <- rep(0, n)
                   X = X, Y = Y, weights = weights, offset = offset,
                   maxit = maxit, epsilon = epsilon, trace = trace > 0L))
     coefs <- coef(fit)
-    fit$coef.contrasts <- cmatrix <- cglmContrastMatrix(coefs, ref)
+    fit$coef.contrasts <- cmatrix <- colmContrastMatrix(coefs, ref)
     fit$coefficients <- as.matrix(coefs %*% cmatrix)
     fit$linear.predictors <- fit$linear.predictors %*% cmatrix
     fit$ref <- ref
@@ -89,7 +89,7 @@ offset <- rep(0, n)
     fit$model <- mf
     fit$df.null <- nobs(fit) - 1
     fit$SS.residual <- sum(fit$prior.weights * (fit$residuals ^ 2)) 
-    class(fit) <- c("cglm", "mlm", "lm")
+    class(fit) <- c("colm", "mlm", "lm")
     return(fit)
 }
 
