@@ -30,6 +30,6 @@ logdepth <- log(ArcticLake[, "depth"])
 cglm(sediments ~ logdepth, ref = 3, method = "logy.fit")
 ##  Fit the corresponding Generalized Wedderburn logit model for 
 ##  dependence of logratios on log(depth):
-gw_model <- cglm(sediments ~ logdepth, ref = 3)
+gw_model <- colm(sediments ~ logdepth, ref = 3)
 }
 \keyword{datasets}
