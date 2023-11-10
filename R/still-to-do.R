@@ -24,3 +24,9 @@ rstudent.colm <- function (model, ...) .NotYetImplemented()
 update.colm <- function (object, ...) .NotYetImplemented()
 
 deviance.colm <- function (object, ...) .NotYetImplemented()
+
+comean <- function(xmat) .NotYetImplemented()          ## compositional mean (vector)
+
+covar <- cocov <- function(xmat) .NotYetImplemented()  ## compositional covariance (matrix)
+
+cocor <- function(xmat) .NotYetImplemented()           ## compositional correlation (matrix)

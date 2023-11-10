@@ -4,65 +4,63 @@
 Function to specify and fit multivariate regression models to compositional-response data
 }
 \description{
-This function works in much the same way as \code{stats::glm}.  The models currently available are Aitchison-type
-multivariate linear regression based on logratio transformation of the responses, and the 
-Generalized Wedderburn logit model.
+This function works in much the same way as \code{stats::glm}.  The
+models currently available are Aitchison-type multivariate linear regression based on logratio transformation of the responses, and the Generalized Wedderburn logit model.
 }
 \usage{
 colm(formula, data, weights, subset, na.action = na.exclude, start = NULL, maxit = 100, 
-   epsilon = 1e-08, trace = FALSE, method = "gw.fit", contrasts = NULL, ref = 1, 
-   y.totals = NULL, ...)
+   epsilon = 1e-08, trace = FALSE, method = "logit_fit", contrasts = NULL, ref = 1, 
+   y.totals = NULL, qr = TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{formula}{
+\item{formula}{
   a model formula.  See \code{\link{glm}} for more details.
 }
-  \item{data}{
-  an optional data frame, list or environment as for \code{\link{glm}}.  If not found in \code{data}, 
-  the variables for the model are taken from environment(formula), typically the environment from 
-  which colm is called.
+\item{data}{
+  an optional data frame, list or environment as for \code{\link{glm}}.  If not found in \code{data}, the variables for the model are taken from environment(formula), typically the environment from which colm is called.
 }
-  \item{weights}{
+\item{weights}{
   an optional vector of 'prior weights' to be used in the fitting process. Should be NULL or a numeric vector.
 }
-  \item{subset}{
+\item{subset}{
   an optional vector specifying a subset of observations to be used in the fitting process.
 }
-  \item{na.action}{
+\item{na.action}{
   must be either \code{\link{na.omit}} or \code{\link{na.exclude}}.
 }
-  \item{start}{
+\item{start}{
   a matrix of starting values for the parameters in the linear predictor.
 }
-  \item{maxit}{
+\item{maxit}{
   the maximum number of least squares iterations to perform.
 }
-  \item{epsilon}{
+\item{epsilon}{
   the convergence tolerance.  ?? say how it is defined
 }
-  \item{trace}{
+\item{trace}{
   logical, whether progress of iterations should be reported.
 }
-  \item{contrasts}{
+\item{contrasts}{
   an optional list. See the \code{contrasts.arg} of \code{\link{model.matrix}}.
 }
-  \item{ref}{
+\item{ref}{
   integer, the response reference component to use.
 }
-  \item{y.totals}{
+\item{y.totals}{
   numeric, either a scalar or a vector whose length is the sample size.  Not currently used.
 }
-  \item{method}{
-  either \code{"gw.fit"} (for Generalized Wedderburn model) or \code{"logy.fit"} (for Aitchison-type multivariate
-  linear model after logratio transformation).
-  }
-  \item{\dots}{
+\item{method}{
+  either \code{"logit_fit"} (for Generalized Wedderburn logit model) or
+  \code{"aitchison_fit"} (for Aitchison-type multivariate linear model
+  after logratio transformation).
+}
+\item{qr}{
+  logical.  If ‘TRUE’ the corresponding component of the fit (the QR matrix) is returned.
+}
+\item{\dots}{
   arguments to pass to other functions.
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
 }
 \value{
 A model object of class \Sexpr{"colm"}, as a list with the following components:
@@ -90,32 +88,41 @@ A model object of class \Sexpr{"colm"}, as a list with the following components:
   \item{df.null}{residual degrees of freedom for the null model.}
   \item{SS.residual}{residual sum of squares from the fitted model.}
   
-  In addition, non-null fits will have components \code{assign}, \code{effects} and (unless not requested) \code{qr} relating to the linear fit, for use by extractor functions such as \code{summary} and 
-  \code{\link{effects}}.
+  In addition, non-null fits will have components \code{assign},
+  \code{effects} and (unless not requested) \code{qr} relating to the
+  linear fit, for use by extractor functions such as \code{summary}
+  and \code{\link{effects}}.
 }
 \references{
-%% ~put references to the literature/web site here ~
+
+Aitchison, J (1986).  \emph{The Statistical Analysis of Compositional Data}.
+Chapman and Hall.  Republished and expanded as Aitchison, J. (2003).
+\emph{The Statistical Analysis of Compositional Data}.  The Blackburn Press. 
+
+Wedderburn, R. W. M. (1974). Quasi-likelihood functions, generalized
+linear models, and the Gauss--Newton method.  \emph{Biometrika}
+\bold{61}, 439--447.
+
 }
 \author{
 David Firth (University of Warwick, UK) and Fiona Sammut (University of Malta)
 }
-
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \examples{
 data(ArcticLake)
+##
 ##  Fit the Aitchison-style multivariate linear model for 
 ##  dependence of logratios on log(depth):
 sediments <- ArcticLake[, 1:3]
 logdepth <- log(ArcticLake[, "depth"])
-colm(sediments ~ logdepth, ref = 3, method = "logy.fit")
+aitchison_model <- colm(sediments ~ logdepth, ref = 3, method = "aitchison_fit")
+print(aitchison_model)
+## Those results replicate Aitchison (2003) [eqn (7.51) on page 165]. 
+##
 ##  Fit the corresponding Generalized Wedderburn logit 
-##  model for dependence of logratios on log(depth):
-gw_model <- colm(sediments ~ logdepth, ref = 3)
+##  model for dependence of composition on log(depth):
+logit_model <- colm(sediments ~ logdepth, ref = 3)
+print(logit_model)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
 \keyword{ models }
 \keyword{ regression }
 \keyword{ nonlinear }

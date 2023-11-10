@@ -1,11 +1,11 @@
 colm <- function (formula, data, weights, subset,
-                    na.action = na.exclude, start = NULL,
-                    maxit = 100, epsilon = 1e-8, trace = FALSE,
-                    method = "gw.fit",
-                    contrasts = NULL, ref = 1,
-                    y.totals = NULL, 
-                    br = FALSE, checkAliasing = FALSE, qr = FALSE, 
-                    ...)
+                  na.action = na.exclude, start = NULL,
+                  maxit = 100, epsilon = 1e-8, trace = FALSE,
+                  method = "logit_fit",
+                  contrasts = NULL, ref = 1,
+                  y.totals = NULL,
+                  qr = TRUE,
+                  ...)
     ##  The y.totals argument is there to allow NAs to be treated properly
     ##  (in due course, once we have programmed that).
 {
@@ -59,8 +59,8 @@ colm <- function (formula, data, weights, subset,
 #    else if (is.null(y.totals)) {
 #	    Y <- Y / rsY
 #    } else stop("y.totals must be either a positive number or NULL")
-    
-    if (is.character(ref)){ 
+
+    if (is.character(ref)){
         if (!(ref %in% response.names)) stop("invalid ref argument")
         ref <- which(response.names == ref)
     }
@@ -88,7 +88,7 @@ offset <- rep(0, n)
     fit$method <- method
     fit$model <- mf
     fit$df.null <- nobs(fit) - 1
-    fit$SS.residual <- sum(fit$prior.weights * (fit$residuals ^ 2)) 
+    fit$SS.residual <- sum(fit$prior.weights * (fit$residuals ^ 2))
     class(fit) <- c("colm", "mlm", "lm")
     return(fit)
 }

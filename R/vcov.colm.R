@@ -1,4 +1,4 @@
-vcov.colm <- function(object, type = "model-based") {  
+vcov.colm <- function(object, type = "model-based", ...) {
     model <- object
     if (!inherits(model, "colm")) stop("model must be an object of class \"colm\"")
     if (!(type %in% c("model-based", "robust"))) {
@@ -22,12 +22,12 @@ vcov.colm <- function(object, type = "model-based") {
     ##
     if (type == "robust"){
         ##
-        if (model$method %in% c("logy.fit", "multinom.fit")) { 
+        if (model$method %in% c("logy.fit", "multinom.fit")) {
             stop("robust standard errors are not implemented for this model")
         }
         ##  The bread in the Sandwich estimator is model-based vcov with Sigma the identity matrix
 bread <- kronecker(crossprod(fullContrasts, fullContrasts), solve(crossprod(X)))
-        ##  Next compute the "ham": 
+        ##  Next compute the "ham":
         p <- fitted(model)
         p <- p / totals
         y <- y / totals
@@ -41,7 +41,7 @@ bread <- kronecker(crossprod(fullContrasts, fullContrasts), solve(crossprod(X)))
         PP <-                              ## "multinomial" variance-covariance matrices
             lapply ((1:n),  function(i) {
                 p.i <- p[i,]
-                #        crossprod(theContrasts, diag(p.i) - outer(p.i, p.i)) 
+                #        crossprod(theContrasts, diag(p.i) - outer(p.i, p.i))
                 diag(p.i) - tcrossprod(p.i)
             })
         Xexp <- kronecker(X, diag(d))      ## expanded to all D components
@@ -56,7 +56,7 @@ bread <- kronecker(crossprod(fullContrasts, fullContrasts), solve(crossprod(X)))
         D <- PPexp %*% Xexp
         VinvD <- Vinv %*% D
         ham <- as.matrix(Matrix::crossprod(VinvD, S) %*% VinvD)
-        perm <- as.vector(outer(d * (0:(np-1)), 1:d, FUN = "+"))  
+        perm <- as.vector(outer(d * (0:(np-1)), 1:d, FUN = "+"))
         ham <- ham[perm, perm]  ## corrects the ordering of rows and columns
         ##
         result <- bread %*% ham %*% bread    ## the sandwich formula
@@ -67,10 +67,10 @@ bread <- kronecker(crossprod(fullContrasts, fullContrasts), solve(crossprod(X)))
     ##
     ##  Finally, tidy up the row and column names in the result:
     coefnames <- dimnames(coefs)
-    coefnames <- paste(rep(coefnames[[1]], ncol(coefs)), 
-                       rep(coefnames[[2]], rep(nrow(coefs), ncol(coefs))), 
+    coefnames <- paste(rep(coefnames[[1]], ncol(coefs)),
+                       rep(coefnames[[2]], rep(nrow(coefs), ncol(coefs))),
                        sep = "_")
     rownames(result) <- colnames(result) <- coefnames
- 
+
    return(result)
-} 
+}

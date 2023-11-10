@@ -1,7 +1,4 @@
-## importFrom("graphics", "plot", "points", "segments")
-## importFrom("stats", "coef", "glm", "model.matrix", "residuals", "terms", "vcov")
-
-export(colm)
+export(colm) ##  comean, cocov, covar, cocor)
 
 S3method(summary, colm)
 S3method(plot, colm)
@@ -23,6 +20,7 @@ S3method(deviance, colm)
 importFrom("methods", "as")
 importFrom("stats", "coef", "fitted", "is.empty.model", "lm",
      "model.matrix", "model.response", "model.weights",
-     "na.exclude", "nobs", "quantile", "residuals", "setNames",
-     "vcov")
+     "na.exclude", "nobs", "quantile", "residuals", "setNames", "terms",
+     "vcov", "cooks.distance", "effects", "influence", "rstandard", "rstudent")
 importFrom("Matrix", "Diagonal", "Matrix", "bdiag")
+#importFrom("graphics", "plot", "points", "segments")

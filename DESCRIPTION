@@ -3,10 +3,11 @@ Type: Package
 Title: Analysis of Composition through Statistical Models
 Version: 0.3.0.9000
 Authors@R: 
-    person("David", "Firth", email = "d.firth@warwick.ac.uk", role = c("aut", "cre"))
-    person("Fiona", Sammut", email = "fiona.sammut@um.edu.mt", role = "aut")
+    c(person("David", "Firth", email = "d.firth@warwick.ac.uk", role = c("aut", "cre")),
+      person("Fiona", "Sammut", email = "fiona.sammut@um.edu.mt", role = "aut"))
+Maintainer: David Firth <d.firth@warwick.ac.uk>
 Description: This package provides facilities for compositional data analysis without requiring logratio transformation of data. 
-License: `use_gpl3_license()`
-Imports: methods, Matrix
+License: GPL (>= 3)
+Imports: stats, methods, Matrix
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
