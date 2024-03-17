@@ -4,8 +4,10 @@
 Function to specify and fit multivariate regression models to compositional-response data
 }
 \description{
-This function works in much the same way as \code{stats::glm}.  The
-models currently available are Aitchison-type multivariate linear regression based on logratio transformation of the responses, and the Generalized Wedderburn logit model.
+This function works in much the same way as \doed{stats::lm} or \code{stats::glm}.  The
+models currently available are Aitchison-type multivariate linear
+regression based on logratio transformation of the responses, and the
+Generalized Wedderburn logit model as developed in Firth and Sammut (2023).
 }
 \usage{
 colm(formula, data, weights, subset, na.action = na.exclude, start = NULL, maxit = 100, 
@@ -52,7 +54,7 @@ colm(formula, data, weights, subset, na.action = na.exclude, start = NULL, maxit
 }
 \item{method}{
   either \code{"logit_fit"} (for Generalized Wedderburn logit model) or
-  \code{"aitchison_fit"} (for Aitchison-type multivariate linear model
+  \code{"logratio_fit"} (for Aitchison-type multivariate linear model
   after logratio transformation).
 }
 \item{qr}{
@@ -99,6 +101,9 @@ Aitchison, J (1986).  \emph{The Statistical Analysis of Compositional Data}.
 Chapman and Hall.  Republished and expanded as Aitchison, J. (2003).
 \emph{The Statistical Analysis of Compositional Data}.  The Blackburn Press. 
 
+Firth, D and Sammut, F (2023).  Analysis of composition on the original
+scale of measurement.  \url{https://arxiv.org/abs/2312.10548}
+
 Wedderburn, R. W. M. (1974). Quasi-likelihood functions, generalized
 linear models, and the Gauss--Newton method.  \emph{Biometrika}
 \bold{61}, 439--447.
@@ -114,13 +119,13 @@ data(ArcticLake)
 ##  dependence of logratios on log(depth):
 sediments <- ArcticLake[, 1:3]
 logdepth <- log(ArcticLake[, "depth"])
-aitchison_model <- colm(sediments ~ logdepth, ref = 3, method = "aitchison_fit")
-print(aitchison_model)
+logratio_model <- colm(sediments ~ logdepth, ref = 3, method = "logratio_fit")
+print(logratio_model)
 ## Those results replicate Aitchison (2003) [eqn (7.51) on page 165]. 
 ##
 ##  Fit the corresponding Generalized Wedderburn logit 
 ##  model for dependence of composition on log(depth):
-logit_model <- colm(sediments ~ logdepth, ref = 3)
+logit_model <- colm(sediments ~ logdepth, ref = 3)  ## method = "logit_fit"
 print(logit_model)
 }
 \keyword{ models }

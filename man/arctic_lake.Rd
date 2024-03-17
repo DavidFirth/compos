@@ -1,5 +1,5 @@
-\name{ArcticLake}
-\alias{ArcticLake}
+\name{arctic_lake}
+\alias{arctic_lake}
 \docType{data}
 \title{
   Arctic lake sediment data from Aitchison (1986)
@@ -9,7 +9,7 @@
   recorded in a 39 by 4 numeric matrix.  The compositions all total approximately 100
   percent.
 }
-\usage{data("ArcticLake")}
+\usage{data("arctic_lake")}
 \format{
   A 39 by 4 numeric matrix.
 }
@@ -27,14 +27,14 @@ Coakley, J P and Rust, B R (1968). Sedimentation in an Arctic lake.
 
 }
 \examples{
-data(ArcticLake)
-head(ArcticLake)
-sediments <- ArcticLake[, c("sand", "silt", "clay")]
+data(arctic_lake)
+head(arctic_lake)
+sediments <- arctic_lake[, c("sand", "silt", "clay")]
 rowSums(sediments)
 ##
 ##  Fit the Aitchison-style multivariate linear model for dependence 
 ##  of logratios on log(depth):
-logdepth <- log(ArcticLake[, "depth"])
+logdepth <- log(arctic_lake[, "depth"])
 logratio_model <- colm(sediments ~ logdepth, ref = 3, method = "logratio_fit")
 print(logratio_model)
 ## Those results replicate Aitchison (2003) [eqn (7.51) on page 165]. 

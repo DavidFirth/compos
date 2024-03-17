@@ -6,7 +6,7 @@ Authors@R:
     c(person("David", "Firth", email = "d.firth@warwick.ac.uk", role = c("aut", "cre")),
       person("Fiona", "Sammut", email = "fiona.sammut@um.edu.mt", role = "aut"))
 Maintainer: David Firth <d.firth@warwick.ac.uk>
-Description: This package provides facilities for compositional data analysis without requiring logratio transformation of data. 
+Description: This package provides facilities for compositional-response regression, without requiring logratio transformation of data. 
 License: GPL (>= 3)
 Imports: stats, methods, Matrix
 Encoding: UTF-8

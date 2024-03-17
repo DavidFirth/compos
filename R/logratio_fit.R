@@ -1,4 +1,4 @@
-aitchison_fit <- function(X, Y, weights = rep(1, nobs), offset = rep(0, nobs),
+logratio_fit <- function(X, Y, weights = rep(1, nobs), offset = rep(0, nobs),
                      maxit = NULL, epsilon = NULL, trace = FALSE,
                      intercept = TRUE){
   nobs <- nrow(Y)
