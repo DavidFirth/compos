@@ -4,7 +4,7 @@
 Function to specify and fit multivariate regression models to compositional-response data
 }
 \description{
-This function works in much the same way as \doed{stats::lm} or \code{stats::glm}.  The
+This function works in much the same way as \code{stats::lm} or \code{stats::glm}.  The
 models currently available are Aitchison-type multivariate linear
 regression based on logratio transformation of the responses, and the
 Generalized Wedderburn logit model as developed in Firth and Sammut (2023).
@@ -65,7 +65,7 @@ colm(formula, data, weights, subset, na.action = na.exclude, start = NULL, maxit
 }
 }
 \value{
-A model object of class \Sexpr{"colm"}, as a list with the following components:
+A S3 model object of class \code{"colm"}, as a list with the following components:
   \item{coefficients}{a matrix, the parameter estimates in the fitted model.}
   \item{residuals}{the matrix of model residuals.}
   \item{effects}{??}
@@ -113,12 +113,12 @@ linear models, and the Gauss--Newton method.  \emph{Biometrika}
 David Firth (University of Warwick, UK) and Fiona Sammut (University of Malta)
 }
 \examples{
-data(ArcticLake)
+data(arctic_lake)
 ##
 ##  Fit the Aitchison-style multivariate linear model for 
 ##  dependence of logratios on log(depth):
-sediments <- ArcticLake[, 1:3]
-logdepth <- log(ArcticLake[, "depth"])
+sediments <- arctic_lake[, 1:3]
+logdepth <- log(arctic_lake[, "depth"])
 logratio_model <- colm(sediments ~ logdepth, ref = 3, method = "logratio_fit")
 print(logratio_model)
 ## Those results replicate Aitchison (2003) [eqn (7.51) on page 165]. 
