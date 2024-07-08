@@ -1,0 +1,303 @@
+---
+title: "Logit models for compositions"
+author: "David Firth, University of Warwick"
+output:
+  rmarkdown::html_vignette:
+    number_sections: true
+    toc: true
+  pdf_document:
+    number_sections: true
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Logit models for compositions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: compos.bib
+link-citations: yes
+csl: chicago-author-date.csl
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+
+
+\def\diag{\mathop{\rm diag}}
+\def\var{\mathop{\rm var}}
+\def\cov{\mathop{\rm cov}}
+\def\pivec{\boldsymbol{\pi}} 
+\def\alphavec{\boldsymbol{\alpha}}
+\def\betavec{\boldsymbol{\beta}}
+\def\muvec{\boldsymbol{\mu}}
+\def\phivec{\boldsymbol{\phi}}
+\def\pimat{\boldsymbol{\Pi}} 
+\def\phimat{\boldsymbol{\Phi}} 
+\def\Imat{\boldsymbol{I}}
+\def\Jmat{\boldsymbol{J}}
+\def\Vmat{\boldsymbol{V}}
+\def\Cmat{\boldsymbol{C}}
+\def\bmat{\boldsymbol{B}}
+\def\Dmat{\boldsymbol{D}}
+\def\Xmat{\boldsymbol{X}}
+
+\def\Yvec{\mathbf{Y}}
+\def\yvec{\mathbf{y}}
+\def\xvec{\mathbf{x}}
+\def\cvec{\mathbf{c}}
+\def\Pvec{\mathbf{P}}
+\def\pvec{\mathbf{p}}
+\def\Uvec{\mathbf{U}}
+\def\wvec{\mathbf{w}}
+\def\onevec{\mathbf{1}}
+\def\zerovec{\mathbf{0}}
+
+\def\multinomial{\mathop{\rm multinomial}}
+
+# Introduction: Models and methods
+
+The main aim of this vignette [which is still very much a work in progress] is to show how to use the _R_ function `compos::colm()` to fit _compositional logit models_ as described in @firth2023. This will be done through two well-known and very small examples: analysis of the 'Arctic lake sediment' data from @aitchison1986 and [still to come, not yet included in this vignette] of the 'leaf blotch on barley' data from @wedderburn1974.  First, in this section, a brief overview is given of the relevant statistical models and methods.
+
+If you are reading the HTML version of this vignette, then you will need an internet connection in order to display mathematical formulas and equations correctly.
+
+## Compositional logit model
+
+A compositional logit model has exactly the same form as the familiar _multinomial logit model_, but the more general name used here is intended to emphasize that the model's application extends beyond multinomial models for count data. The responses are vectors of non-negative measurements
+$$
+\Yvec_i = (Y_{i1},\ldots,Y_{iD}) \qquad (i=1,\ldots,n),
+$$
+which can always be written in the form
+$$
+\Yvec_i = T_i(P_{i1},\ldots,P_{iD}) = T_i \Pvec_i,\ \textrm{say},
+$$
+with $\sum_{j=1}^d P_{ij} = 1$.  The unit-sum vectors $\Pvec_i$ are often referred to as _compositional data_. Invariably in applications the measurements $\Yvec_i$ are _extensive_ variables, which implies that statistical models should ideally focus on arithmetic means and totals, i.e., models which respect the additive nature of the data [see, for example, @cox2011, Chapter 4]. If we write $E(\Yvec_i) = E(T_i \Pvec_i) = \tau_i \pivec_i$, where 
+$$
+\pivec_i = (\pi_{i1},\ldots,\pi_{iD})\quad \textrm{with}\quad \sum_{j=1}^D\pi_{ij} =1,
+$$
+then a compositional logit (CL) model for the composition vectors $\pivec_i$ has the form
+\begin{equation}
+\log(\pi_{ij}/\pi_{ik}) = \xvec_i^T (\betavec_j - \betavec_k)
+\end{equation}
+for all $j$ and $k$ in $\{1,\ldots,D\}$.  Here $\xvec_i$ is the vector of covariate values for the $i$th response vector; typically the first element of $\xvec_i$ will be 1 for all $i$, corresponding to the intercept term in the assumed regression model. Each $\betavec_j$ $(j \in 1,\ldots,D)$ is a vector of regression coefficients specific to part $j$ of the composition under study.
+
+Two aspects worth noting are:
+
+- Only _differences_ (or, more generally, linear _contrasts_) among the parameter vectors $\betavec_1,\ldots,\betavec_D$ are identified in such a model.
+
+- The covariate vector $\xvec_i$ is taken to be the same for every one of the logits $\log(\pi_{ij}/\pi_{ik})$.  This might seem rather restrictive, but it can readily be relaxed in some standard ways, such as separate specifications for a nested sequence of CL models.  (An example of this is given for the Arctic lake data below.)
+
+## A standard alternative: Linear model for log-ratio transformed data 
+
+The compositional logit model defined above stands in contrast to the multivariate linear model for log-ratio transformed data, as defined in @aitchison1986, which can be written similarly as
+$$
+E[\log(P_{ij}/P_{ik})] = \xvec_i^T (\betavec_j - \betavec_k).
+$$
+The key distinction to appreciate here is between this linear model for the logratio-transformed compositional data $P_{ij}$, and a linear model for the logit-transformed compositional means $\pi_{ij}$ (i.e, the CL model defined in Section 1.1 above).  The CL model is a _generalized linear model_; see, for example, @mccullagh1989.
+
+## Advantages of the CL model over log-ratio transformed data
+
+The motivation for the CL model, and its advantages over the data-transformation approach. are discussed fully in @firth2023. Briefly, the most important advantages are:
+
+- The CL model is a statistical description of the arithmetic means of compositional measurements. A linear model for logratio-transformed measurements, on the other hand, is a model for geometric means instead. As mentioned already, with _extensive_ variables of the kind that are used to measure a composition, it makes most sense to use statistical models that target arithmetic means and totals directly. This leads to more straightforward interpretation of model parameters and fitted values, on the original scale of the data.
+
+- Logratio transformation of the data involves the logarithm function, which is unstable for small values of $P_{ij}$ and undefined if any value of $P_{ij}$ is zero. In practice, this is a major limitation on the logratio transformation methodology. Small and zero values in the data are not a problem for the CL model, though, when the straightforward quasi-likelihood method of @firth2023 (more on which, below) is used for estimation.
+
+## Model assumptions: Parametric or semi-parametric?
+
+### Parametric
+
+A short summary is given here of some of the main parametric models that are used, in connection with either the compositional logit or logratio linear-model assumptions for dependence on covariates. 
+
+#### Count data: Multinomial logit models
+
+When the measurements $Y_{ij}$ are _counts_, the most standard parametric assumption --- at least as a starting point --- is that each count vector $\Yvec_i$ conditional on the total $T_i$ has a multimomial distribution with probabilities (true proportions) $\pivec_i$.  In the special case of compositions with only two parts, i.e., $D = 2$, the corresponding special case of the multinomial distribution is the binomial. The CL model then is simply logistic regression (when $D=2$) or the multinomial logit model (when $D>2$). In _R_, maximum likelihood fitting of such models can be achieved via `glm()`, or `nnet::multinom()`; and there are by now various other packages which offer extended functionality.
+
+#### Continuous data: Beta and Dirichlet models
+
+For continuous data (without zeros), the most standard parametric assumption in current use for CL models is that the compositional data vectors $\Pvec_i$ each follow a Dirichlet distribution, with mean vectors $\pivec_i$ described by logit-linear dependence on covariates as in section 1.1 above. In the special case of compositions with only two parts, i.e., $D = 2$, the corresponding Dirichlet distribution is a beta distribution.  The well-established _R_ packages [DirichletReg](https://cran.r-project.org/package=DirichletReg) [@maier2014] and [betareg](https://cran.r-project.org/package=betareg) [@cribari-neto2010] provide facilities for working with these models.
+
+#### Continuous data: Logistic normal models
+
+Again for continuous data (and again without zeros), a fully parametric alternative is provided by the linear model for logratio-transformed data, as defined in section 1.2 above and with the error vectors $\{\log(P_{ij}/P_{ik}) - \xvec_i^T (\betavec_j - \betavec_k):\, i=1,\ldots,n\}$ all drawn independently from a multivariate normal distribution $\mathrm{MVN}(\zerovec, \phimat)$. This is the model developed in @aitchison1986.
+
+### Semi-parametric 
+
+The logistic-normal linear model of @aitchison1986 (described above) represents a _multiplicative error_ structure, in which the measurements $Y_{ij}$ take the form
+$$
+Y_{ij} = \tau_i \pi_{ij} U_{ij} = \tau_i \exp(\xvec_i^T \betavec_j) U_{ij},
+$$
+with the error vectors $\Uvec_i = (U_{i1},\ldots,U_{iD})$ drawn independently from a multivariate log-normal distribution. 
+
+If the same multiplicative structure is assumed but without restricting the errors to be lognormally distributed, then a useful approach is based on assumptions about only the first two moments of the error vectors $\Uvec_i$.  Specifically, assume that $E(\Uvec_i) = \onevec$ so that the model relates to expected values (i.e., arithmetic means) of the measurements on their original scale; and assume that $\cov(\Uvec_i)$ is the same for all $i$, say $\cov(\Uvec_i) = \phimat$. (The latter assumption can easily be relaxed if needed, but here it will be assumed that the multiplicative error vectors all have the same variance-covariance structure $\phimat$.) 
+
+With this simple, semi-parametric assumption of multiplicative errors, it can be shown [@firth2023] that the corresponding first-two-moments assumption for the compositional data vectors $\Pvec_i$ is
+$$
+E(\Pvec_i) = \pivec_i; \qquad \cov(\Pvec_i) = (\pimat_i - \pivec_i\pivec_i^T) \phimat (\pimat_i - \pivec_i\pivec_i^T),
+$$
+where $\pimat_i = \diag(\pivec_i)$.  This generalizes a suggestion made by @wedderburn1974, to use the square of the binomial variance function, for continuous proportions in a 2-part composition. The factor $(\pimat_i - \pivec_i\pivec_i^T)$ is the variance-covariance function of the multinomial distribution; and matrix $\phimat$ provides the additional flexibility to account for varying precisions and/or correlation across the measurements of a $D$-part composition vector. Because of this connection, this semiparametric model might correctly be called the 'generalized Wedderburn' model for compositional-response regression.
+
+## Quasi-likelihood estimation
+
+The main purpose of `compos::colm()` is to implement the method of quasi-likelihood [@wedderburn1974;@mccullagh1983] for the semi-parametric model just described. In essence, quasi-likelihood estimating equations are the appropriate generalization of (generalized) least squares, to situations where the response variances and covariances depend on the mean.
+
+The quasi-likelihood equations in this instance are straightforward, and are described in @firth2023. Some key points to note are:
+
+- Consistency of the parameter estimates does not depend on correct specification of the variance-covariance structure (i.e., does not depend on the assumption of multiplicative errors).
+
+- Under the assumed variance-covariance structure, the quasi-likelihood estimating equations are the best possible linear unbiased estimating equations. This comes immediately from the general theory in @mccullagh1983.
+
+- Remarkably, the aforementioned optimality property applies for CL models even if the value of $\phimat$ used in the estimating equations is always taken to be the _identity_ matrix. This simplifies the computation of quasi-likelihood estimates.  It is essentially the same property as the well-known equivalence of ordinary least squares and generalized least squares in the theory of `seemingly unrelated' linear regressions.
+
+For a full discussion of these properties, with references, see @firth2023.
+
+## Some advantages of the semi-parametric approach
+
+The fully parametric models mentioned above have the advantage of fully specified likelihood functions, with corresponding statistical theory and methods. The price paid for this, though, is a degree of fragility: the validity of the relevant statistical theory and methods depends --- sometimes strongly --- upon the correctness of the parametric specification made (for example, Dirichlet or logistic normal distribution). In particular, it can happen that failure of the detailed distributional assumptions is both hard to check _and_ damages the validity of the conclusions drawn.
+
+An additional, well-known drawback of the Dirichlet family is that its variance-covariance structure is restrictive, with strong independence properties assumed for the regression errors. This might or might not be a problem in practice; but it is in any case avoidable through use of the more flexible, semi-parametric approach described above.
+
+The logistic normal family has a much richer variance-covariance structure than the Dirichlet, but has a different disadvantage: logistic-normal linear models target _geometric means_ rather than arithmetic means, and any translation back to arithmetic means --- as seems essential in many types of application --- depends critically on correctness of the logistic-normal assumption for the errors.  The semi-parametric approach outlined above, on the other hand, targets arithmetic means directly.
+
+The last thing to mention here is that _zero_-valued compositional measurements, while not a problem for the semiparametric approach since it uses linear estimating equations, can render Dirichlet and logistic-normal models completely inoperable. This is a major practical problem in many types of application. Various fixups have been suggested, for example adding small constants to eliminate any zeros in the data; but such devices are arbitrary, and often the results will depend quite strongly on the specific fixup chosen. (In the case of logistic-normal models, for example, the log of a small number exists but is very sensitive to the value of the small number.)
+
+
+# Use of `compos::colm()` to fit compositional-logit and logratio-linear regression models 
+
+## The basics: Model specification and the resultant model object
+
+The `colm()` function is central to the **compos** package.  It works in much the same way as `stats::lm()` or `stats::glm()`.  The models currently available via `colm()` are Aitchison-type multivariate linear regression based on logratio transformation of the compositional measurements, and the 'generalized Wedderburn' compositional logit model as developed in Firth and Sammut (2023) and described briefly above.
+
+At the time of writing, the form of a minimal call to `colm()` is
+```
+colm(formula, data)
+```
+Here `formula` is a standard type of regression-model specification as used by `lm()` or `glm()`, for example; and `data` is a data frame in which the variables that appear in `formula` can be found. (Actually the call pattern above is not strictly minimal, since the `data` argument can be omitted if the variables needed are all present in the calling environment.)  The response variable in the `formula` must be of class `"matrix"`: its rows are equivalently either the raw measurement vectors $\Yvec_i$ or the compositional data vectors $\Pvec_i$, in the notation used in the Introduction here.
+
+Two small examples of the use of `colm()` are given in the following subsections.
+
+As usual for _R_ functions, full documentation can be found via `help(compos::colm)`.  The main other argument to know about initially is the `method` argument, whose value must be one of (currently) just two permitted character strings:
+```
+  method: either ‘"logit_fit"’ (for generalized Wedderburn logit model)
+          or ‘"logratio_fit"’ (for Aitchison-type multivariate linear
+          model after logratio transformation).
+```
+The default choice is `method = "logit_fit"`.
+
+The result of a call to `colm()` is an S3 object of class `c("colm", "mlm", "lm")` --- an object rather like the one that results from calling calling `lm()` with a matrix response variable.
+
+## Example: Arctic lake sediment data
+
+This is the dataset used in @aitchison1986, to illustrate the dependence of a 3-part composition on a single explanatory variable. Here is a view of the top of the output from `help(arctic_lake)`:
+```
+arctic_lake               package:compos               R Documentation
+
+Stanwell-Fletcher Lake Sediment Data
+
+Description:
+
+     The depth and composition - into (sand, silt, clay) - of 39
+     sediment samples are recorded in a 39 by 4 numeric matrix.  The
+     compositions all total 100 to within rounding error.  Rows of the
+     matrix are ordered and named as in Aitchison (1986, 2003); they
+     are in order of depth apart from row 18.  Two data-transcription
+     errors that appeared in Aitchison (1986, 2003) have been corrected
+     here.
+
+Usage:
+     data("arctic_lake")
+
+Format:
+     A 39 by 4 numeric matrix.
+
+Source:
+     Coakley (1966, Table 5).
+
+     The data were later reproduced in Coakley and Rust (1968, Table 1)
+     but with one transcription error: the "sand" part of sediment "S4"
+     was erroneously recorded there as 52.2 rather than 52.5. The data
+     were also reproduced in Aitchison (1986, 2003) as "Data 5", where
+     the error from Coakley and Rust (1968) was repeated.  A further
+     transcription error was introduced in Aitchison (1986, 2003): the
+     "silt" part of sediment "S24" was erroneously recorded there as
+     54.7 rather than 54.2. Both of these errors have been corrected
+     here.
+	 
+References:
+     
+	 Aitchison, J (1986).  _The Statistical Analysis of Compositional
+     Data_. Chapman and Hall.
+     
+	 Aitchison, J. (2003). _The Statistical Analysis of Compositional
+     Data_.  The Blackburn Press.
+     
+	 Coakley, J P (1966).  History and bottom sediments of
+     Stanwell-Fletcher Lake, Somerset Island, N.W.T.  MSc Thesis,
+     University of Ottawa.
+     <https://ruor.uottawa.ca/bitstream/10393/6966/1/MK01764.PDF>
+	 
+     Coakley, J P and Rust, B R (1968). Sedimentation in an Arctic
+     lake. _Journal of Sedimentary Petrology_ *38*(4), 1290-1300.
+     doi:10.1306/74D71B59-2B21-11D7-8648000102C1865D
+     <https://doi.org/10.1306/74D71B59-2B21-11D7-8648000102C1865D>
+```
+```{r arcticlake_head}
+library(compos)
+data(arctic_lake)
+head(arctic_lake)
+sediments <- arctic_lake[, c("sand", "silt", "clay")]
+rowSums(sediments)
+```
+The first three columns of `arctic_lake` are measured 3-part sediment compositions, while the last column is the water depth (in metres) at which each sediment sample was taken. 
+
+For comparability with the analysis of these data that was reported in @aitchison1986, the regression models used here will contain only the intercept and `log(depth)`. Fit first the log-ratio linear model as in @aitchison1986:
+```{r arcticlake_logratio_model}
+depth <- arctic_lake[, "depth"]; logdepth <- log(depth)
+logratio_model <- colm(sediments ~ logdepth, ref = 3, method = "logratio_fit")
+print(logratio_model)
+```
+As with `lm()`, `glm()` and other such functions, by default the intercept is included in the model. The specification `ref = 3` instructs `colm()` to set all values in $\betavec_3$ to zero; that is, `"clay"` is taken as the 'reference' part in the 3-part composition. This is an arbitrary choice, purely to fix the model's parameterization on account of the fact that only linear _contrasts_ among the vectors $\betavec_1,\betavec_2,\betavec_3$ are identifiable in the model. (The default is `ref = 1`.)
+
+From the output above, the estimated log-ratio linear model agrees [apart from minor differences due to the transcription errors noted in `help(arctic_lake)`] with the estimates reported at equation (7.51) of @aitchison1986:
+\begin{align*}
+E[\log(\textrm{sand}/\textrm{clay})] &= 9.699 - 2.743\log(\textrm{depth}),\\
+E[\log(\textrm{silt}/\textrm{clay})] &= 4.805 - 1.096\log(\textrm{depth}).
+\end{align*}
+
+
+Now fit the corresponding compositional logit model:
+```{r arcticlake_logit_model}
+logit_model <- colm(sediments ~ logdepth, ref = 3)
+## method = "logit_fit" gets used by default
+print(logit_model, digits = 3)
+```
+This estimated logit model can be written out fully as:
+\begin{align*}
+\log[E(\textrm{sand})/E(\textrm{clay})] &= 8.666 - 2.477\log(\textrm{depth}),\\
+\log[E(\textrm{silt})/E(\textrm{clay})] &= 3.789 - 0.864\log(\textrm{depth}).
+\end{align*}
+
+The log-ratio and logit models appear quite similar, with estimated coefficients of the same signs and similar sizes. Note that the parameterization here means that the intercept relates to $\log(\textrm{depth}) = 0$, or a water depth of 1 metre --- not a very meaningful value because the depth values in the data range from around 10 to 100 metres. This can of course be changed, without affecting the model (only its parameterization), by subtracting a constant such as $\log(50)$ from all of the values of $\log(\textrm{depth})$ before fitting the model. [Not done here though, in order to maintain direct comparability with the results reported in @aitchison1986.]
+
+Because we are dealing here with 3-part compositions, the two fitted models can be compared graphically by plotting in two dimensions. 
+```{r simplex_plot, out.width="100%", message=FALSE}
+## Colour the points by 3 depth levels
+cindex <- as.numeric(cut(depth, breaks = quantile(depth, c(0, 1/3, 2/3, 1)),
+                        include.lowest = TRUE))
+colrs <- c("blue", "black", "red")[cindex]
+library(compositions)  ## a CRAN package that includes simplex plots
+png(width = 480, height = 480, file = "arcticlake-fitted.png")
+plot(acomp(sediments), col = colrs)
+lines(acomp(logratio_model$fitted.values), col="darkmagenta", lty = "dashed")
+lines(acomp(logit_model$fitted.values), col="darkmagenta")
+invisible(dev.off())
+```
+![Solid curve is fittted logit model, dashed curve is log-ratio linear model.](arcticlake-fitted.png)
+
+
+<br>
+
+# References

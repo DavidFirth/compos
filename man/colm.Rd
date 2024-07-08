@@ -1,13 +1,13 @@
 \name{colm}
 \alias{colm}
 \title{
-Function to specify and fit multivariate regression models to compositional-response data
+Specify and Fit Multivariate Regression Models to Compositions
 }
 \description{
 This function works in much the same way as \code{stats::lm} or \code{stats::glm}.  The
 models currently available are Aitchison-type multivariate linear
 regression based on logratio transformation of the responses, and the
-Generalized Wedderburn logit model as developed in Firth and Sammut (2023).
+generalized Wedderburn logit model as developed in Firth and Sammut (2023).
 }
 \usage{
 colm(formula, data, weights, subset, na.action = na.exclude, start = NULL, maxit = 100, 
@@ -53,7 +53,7 @@ colm(formula, data, weights, subset, na.action = na.exclude, start = NULL, maxit
   numeric, either a scalar or a vector whose length is the sample size.  Not currently used.
 }
 \item{method}{
-  either \code{"logit_fit"} (for Generalized Wedderburn logit model) or
+  either \code{"logit_fit"} (for generalized Wedderburn logit model) or
   \code{"logratio_fit"} (for Aitchison-type multivariate linear model
   after logratio transformation).
 }
@@ -123,7 +123,7 @@ logratio_model <- colm(sediments ~ logdepth, ref = 3, method = "logratio_fit")
 print(logratio_model)
 ## Those results replicate Aitchison (2003) [eqn (7.51) on page 165]. 
 ##
-##  Fit the corresponding Generalized Wedderburn logit 
+##  Fit the corresponding generalized Wedderburn logit 
 ##  model for dependence of composition on log(depth):
 logit_model <- colm(sediments ~ logdepth, ref = 3)  ## method = "logit_fit"
 print(logit_model)

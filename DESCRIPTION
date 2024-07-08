@@ -6,11 +6,15 @@ Authors@R:
     c(person("David", "Firth", email = "d.firth@warwick.ac.uk", role = c("aut", "cre")),
       person("Fiona", "Sammut", email = "fiona.sammut@um.edu.mt", role = "aut"))
 Maintainer: David Firth <d.firth@warwick.ac.uk>
-Description: Facilities are provided for compositional-response regression, without requiring logratio transformation of data.  Emphasis is on the compositional logit models developed in Firth and Sammut (2023), "Analysis of composition on the original scale of measurement", <arXiv:2312.10548>.  The package currently provides the basics for specifying, fitting and making inferences from such models, as described in the included vignette.  It is planned that these facilities will expand over time, to encompass other multivariate analysis beyond compositional-response regression models, as well as enhanced facilities for model summary and model criticism.  The package name "compos" is an abbreviation of "composition"; the "os" part could also be taken to mean that it relates to analysis of composition on the original scale.
-License: GPL (>= 3)
-Imports: stats, methods, Matrix
+Description: Facilities are provided for compositional-response regression, without requiring logratio transformation of data.  Emphasis is on the compositional logit models developed in Firth and Sammut (2023), "Analysis of composition on the original scale of measurement", <arXiv:2312.10548>.  The package currently provides the basics for specifying, fitting and making inferences from such models, as described in the included vignette.  It is planned that these facilities will expand over time, to encompass other multivariate analysis beyond compositional-response regression models, as well as enhanced facilities for model summary and model criticism.  The package name "compos" is the plural of abbreviation "compo" for a composition.
+License: GPL-2 | GPL-3
+Imports:
+    stats,
+    methods,
+    Matrix
 Encoding: UTF-8
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    compositions
 VignetteBuilder: knitr

@@ -2,7 +2,7 @@
 \alias{foraminiferal}
 \docType{data}
 \title{
-Foraminiferal compositional data from Aitchison (1986)
+Compositions of Foraminifer
 }
 \description{
 The Foraminiferal data is made up of 30 compositions of foraminifer, a single-cell marine micro-organism, with the compositions being recorded at different water depths (in metres) with depth varying from 1m to 30m.  The compositional variables considered in this dataset are Neogloboquadrina atlantica (Na), Neogloboquadrina pachyderma (Np), Globorotalia obesa (Go) and Globigerinoides triloba (Gt).  
